@@ -1,11 +1,15 @@
 using Application.Blooging;
 using Infrastructure.Blogging;
+using static Application.Blooging.IReactionService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddDbContext<BlooggingDBContext>();
+//builder.Services.AddScoped<IBlogRepository, BlogRepository>();
+//builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
+//builder.Services.AddScoped<IBlogService, BlogService>();
+//builder.Services.AddScoped<IReactionService, ReactionService>();
+//builder.Services.AddDbContext<BlooggingDBContext>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

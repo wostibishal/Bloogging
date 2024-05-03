@@ -1,0 +1,68 @@
+﻿@page "/registerUser"
+@using Domain
+@inject HttpClient Http
+
+<h3>Register User</h3>
+
+<EditForm Model="@registerModel" OnValidSubmit="@(() => HandleRegistration("UserRegistrationForm"))">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <InputText id="name" class="form-control" @bind-Value="registerModel.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="email" class="form-control" @bind-Value="registerModel.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <InputText id="password" class="form-control" @bind-Value="registerModel.Password" type="password" />
+    </div>
+
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password:</label>
+        <InputText id="confirmPassword" class="form-control" @bind-Value="registerModel.ConfirmPassword" type="password" />
+    </div>
+    <div class="form-group">
+    <label for="role">Role:</label>
+    <InputSelect id="role" class="form-control" @bind-Value="registerModel.Role">
+        <option value="User">User</option>
+        <!-- Add other roles as needed -->
+    </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@if (registrationMessage != null)
+{
+    <div class="alert alert-info" role="alert">
+        @registrationMessage
+    </div>
+}
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+    private string? registrationMessage;
+
+    private async Task HandleRegistration(string formIdentifier)
+    {
+        var response = await Http.PostAsJsonAsync("api/Account/registerUser", registerModel);
+        if (response.IsSuccessStatusCode)
+        {
+            registrationMessage = "Registration successful.";
+        }
+        else
+        {
+            // Read response content to get detailed error info
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            registrationMessage = $"Registration failed: {errorResponse}";
+            Console.WriteLine("Error details: " + errorResponse); // This will log to browser console
+        }
+    }
+
+}
