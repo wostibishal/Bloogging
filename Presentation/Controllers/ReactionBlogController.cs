@@ -1,5 +1,6 @@
 ﻿using Application;
 using Domain.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
@@ -13,7 +14,7 @@ namespace Presentation.Controllers
         {
             _likeBlogService = likeBlogService;
         }
-
+      
         [HttpPost, Route("Upvote")]
         public async Task<IActionResult> Upvote(ReactionBlog
             like)
@@ -21,7 +22,7 @@ namespace Presentation.Controllers
             var result = await _likeBlogService.AddUpvote(like);
             return Ok(result);
         }
-
+     
         [HttpPost, Route("Downvote")]
         public async Task<IActionResult> DownVote(ReactionBlog like)
         {

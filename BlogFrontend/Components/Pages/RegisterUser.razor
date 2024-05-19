@@ -1,10 +1,11 @@
 ﻿@page "/registerUser"
+@inject NavigationManager NavigationManager
 @using Domain
 @inject HttpClient Http
 
 <h3>Register User</h3>
 
-<EditForm Model="@registerModel" OnValidSubmit="@(() => HandleRegistration("UserRegistrationForm"))">
+<EditForm Model="@registerModel" OnValidSubmit="HandleRegistration">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -38,30 +39,22 @@
     <button type="submit" class="btn btn-primary">Register</button>
 </EditForm>
 
-@if (registrationMessage != null)
-{
-    <div class="alert alert-info" role="alert">
-        @registrationMessage
-    </div>
-}
-
 @code {
     private RegisterModel registerModel = new RegisterModel();
-    private string? registrationMessage;
 
-    private async Task HandleRegistration(string formIdentifier)
+    private async Task HandleRegistration()
     {
-        var response = await Http.PostAsJsonAsync("api/Account/registerUser", registerModel);
+        var response = await Http.PostAsJsonAsync("api/account/register", registerModel);
         if (response.IsSuccessStatusCode)
         {
-            registrationMessage = "Registration successful.";
+            // Handle success
+            NavigationManager.NavigateTo("login");
         }
         else
         {
-            // Read response content to get detailed error info
-            var errorResponse = await response.Content.ReadAsStringAsync();
-            registrationMessage = $"Registration failed: {errorResponse}";
-            Console.WriteLine("Error details: " + errorResponse); // This will log to browser console
+            // Handle errors
+            var errors = await response.Content.ReadFromJsonAsync<Dictionary<string, string[]>>();
+            // Process errors
         }
     }
 

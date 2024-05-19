@@ -12,6 +12,7 @@ namespace Infrastructure
     public class CommentService : ICommentService
     {
         private readonly ApplicationDBContext _context;
+
         public CommentService(ApplicationDBContext context)
         {
             _context = context;
@@ -65,14 +66,14 @@ namespace Infrastructure
                 return new CommentResponce(true, " Comment Sucessfully Deleated");
             }
             else
-            {
+        {
                 return new CommentResponce(false, " Comment Couldn't be Deleated");
             }
         }
 
-        public async Task<IEnumerable<Comment>> GetAllComment()
+        public async Task<IEnumerable<Comment>> GetAllComment(Guid id)
         {
-            var result = await _context.Comments.ToListAsync();
+            var result = await _context.Comments.Where(c => c.BlogId == id).ToListAsync();
             return result;
         }
 
@@ -91,7 +92,7 @@ namespace Infrastructure
 
 
             if (prevComment != null)
-            {
+        {
                 history.Comments = prevComment.Id;
                 history.CommentContentPrevious = prevComment.Content;
                 history.CommentCreatedDateTime = prevComment.PostedAt;
@@ -105,10 +106,10 @@ namespace Infrastructure
                 _context.Comments.Update(prevComment);
                 await _context.SaveChangesAsync();
 
-            }
+        }
             return new CommentResponce(true, "Sucessfully UPDATED", prevComment);
 
-        }
-
     }
+
+}
 }

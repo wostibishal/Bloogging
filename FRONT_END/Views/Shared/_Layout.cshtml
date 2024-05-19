@@ -1,0 +1,93 @@
+﻿@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bislerium Blogs</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Front_End.styles.css" asp-append-version="true" />
+    <link href="~/css/style.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <section class="navbar-section">
+            <div class="main-container">
+                <div class="main-navbar">
+                    <div class="logo-navbar">
+                        <a asp-action="Index" asp-controller="Home" title="Logo"><img src="~/images/logo.png" alt=""></a>
+                    </div>
+                    <ul class="main-navbar-ul">
+                        <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+
+
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li>
+                                <a asp-controller="Admin" asp-action="Index">Admin</a>
+                            </li>
+                            <li>
+                                <form class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout"><button class="float-end" type="submit">Logout</button></form>
+                            </li>
+                        }
+
+
+                        else if (User.Identity.IsAuthenticated && User.IsInRole("Blogger"))
+                        {
+
+                            <li>
+                                <a asp-area="" asp-controller="Blog" asp-action="Index">My Blogs</a>
+                            </li>
+                            <li>
+
+                                <a asp-area="" asp-controller="Account" asp-action="UpdateUser" asp-route-id="@User.FindFirstValue(ClaimTypes.NameIdentifier)">Update Profile</a>
+                            </li>
+                            <li>
+                                <a asp-area="" asp-controller="Account" asp-action="ChangePassword">Change Password</a>
+                            </li>
+
+                            <li>
+                                <form class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout"><button class="float-end" type="submit">Logout</button></form>
+                            </li>
+
+                        }
+
+                        else
+                        {
+                            <div class="two-navbar-buttons">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register"><button class="btn btn-outline-secondary">Register</button></a>
+
+                            </div>
+                            <div class="two-navbar-buttons">
+                                <a class="register-btn" asp-action="Login">
+                                    Login
+                                </a>
+                            </div>
+
+
+                        }
+                    </ul>
+
+
+                </div>
+        </section>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="border-top footer justify-content-center">
+        <div class="container text-center">
+            &copy; 2024 - Bislerium Blogs
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

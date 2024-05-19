@@ -12,7 +12,6 @@ namespace Domain.Entity
 {
     public class ReactionBlog
     {
-
         [Key]
         public Guid Id { get; set; }
 
@@ -30,8 +29,7 @@ namespace Domain.Entity
 
         public virtual Blogging? blogFK { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     }
 

@@ -1,13 +1,13 @@
-
 using Application;
 using Domain;
-using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using Infrastructure;
 
 namespace Presentation
 {
@@ -17,13 +17,26 @@ namespace Presentation
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Configure services
             builder.Services.AddDbContext<ApplicationDBContext>();
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            // Swagger configuration
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme (Example: 'Bearer 12345abcdef')",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
+
+            // JWT Authentication
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,36 +54,34 @@ namespace Presentation
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
                 };
             });
-            //Add Authorization
-            builder.Services.AddSwaggerGen(options =>
+
+            // Identity configuration
+            builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
             {
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            })
+            .AddEntityFrameworkStores<ApplicationDBContext>()
+            .AddDefaultTokenProviders();
 
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
-            });
-
-
-            //Add Authorization
-            builder.Services.AddAuthorizationBuilder();
+            // Scoped services for application features
             builder.Services.AddScoped<ICommentService, CommentService>();
             builder.Services.AddScoped<IReactionCommentService, ReactionCommentServices>();
             builder.Services.AddScoped<IBloggingService, BloggingService>();
             builder.Services.AddScoped<IReactionBlogService, ReactionBlogService>();
-            builder.Services.AddIdentity<AppUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDBContext>()
-            .AddApiEndpoints();
-            builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IAdminService, AdminServices>();
+            builder.Services.AddScoped<IAccountService, AccountServices>();
 
             var app = builder.Build();
+
+            // Apply any pending database migrations and seed data
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                string[] roles = ["Admin", "Blogger"];
+                string[] roles = new string[] { "Admin", "Blogger" };
 
                 foreach (var roleName in roles)
                 {
@@ -80,10 +91,6 @@ namespace Presentation
                     }
                 }
             }
-            app.MapIdentityApi<AppUser>();
-
-            //add Authentication
-
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -91,16 +98,11 @@ namespace Presentation
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseRouting();
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
-
             app.UseAuthorization();
-
             app.MapControllers();
-
-
             app.Run();
         }
     }

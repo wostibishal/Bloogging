@@ -9,12 +9,14 @@ namespace Domain
 {
     public class ChangePassword
     {
+        public string? UserId { get; set; }
         [DataType(DataType.Password)]
         public string? OldPassword { get; set; }
         [DataType(DataType.Password)]
         public string? Password { get; set; }
+
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "The password and conform password do not match.")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string? ConfirmPassword { get; set; }
     }
 }

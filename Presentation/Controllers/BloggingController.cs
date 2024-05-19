@@ -16,7 +16,7 @@ namespace Presentation.Controllers
         {
             _blogService = blogService;
         }
-
+      
         [HttpPost, Route("AddBlog")]
         public async Task<IActionResult> AddBlog(Blogging 
             std)
@@ -25,6 +25,7 @@ namespace Presentation.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpGet, Route("GetBlog")]
         public async Task<IActionResult> GetABlog(Guid id)
         {
@@ -32,13 +33,14 @@ namespace Presentation.Controllers
             if (result == null)
             {
                 return NotFound();
-            }
+                }
             return Ok(result);
-        }
+            }
 
+        [AllowAnonymous]
         [HttpGet, Route("GetBlogs")]
         public async Task<IActionResult> GetAllBlogs()
-        {
+            {
             var result = await _blogService.GetAllBlogs();
             if (result == null)
             {
@@ -46,15 +48,15 @@ namespace Presentation.Controllers
             }
             return Ok(result);
         }
-
+      
         [HttpDelete, Route("DeleteBlog")]
         public async Task<IActionResult> DeleteBlog(Guid Id)
-        {
+            {
             await _blogService.DeleteBlog(Id);
 
             return Ok();
         }
-
+       
         [HttpPut, Route("UpdateBlog")]
         public async Task<IActionResult> UpdateBlog(Blogging blog)
         {
@@ -62,20 +64,21 @@ namespace Presentation.Controllers
             if (result == null)
             {
                 return NotFound();
-            }
+        }
             return Ok(result);
         }
 
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(Guid Id)
+        [HttpGet("GetBlogspag")]
+        public async Task<ActionResult<IEnumerable<Blogging>>> GetAllBlogsPagination(int pageNumber, int pageSize)
         {
-            var result = _blogService.DeleteBlog(Id);
+
+            var result = await _blogService.GetAllBlogsPagination(pageNumber, pageSize);
             if (result == null)
             {
                 return NotFound();
             }
             return Ok(result);
+
         }
     }
 }

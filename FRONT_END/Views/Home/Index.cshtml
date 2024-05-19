@@ -1,0 +1,39 @@
+﻿@using System.Security.Claims
+@model IEnumerable<Domain.Entity.Blogging>
+
+@{
+    ViewData["Title"] = "Blog Index";
+}
+
+<div class="container">
+    
+    @foreach (var item in Model)
+    {
+        <a href="@Url.Action("SingleBlog", "Blog", new { id = item.Id })" class="btn btn-success">
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    @if (!string.IsNullOrEmpty(item.ImageName))
+                    {
+                        <img src="@Url.Content("~/Images/Blogs/" + item.ImageName)" class="img-fluid rounded-start" alt="Blog Post Image">
+                    }
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.BlogTitle)</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                Likes: @Html.DisplayFor(modelItem => item.LikeCount) |
+                                Dislikes: @Html.DisplayFor(modelItem => item.DislikeCount) |
+                                Comments: @Html.DisplayFor(modelItem => item.CommentCount) |
+                                Popularity: @Html.DisplayFor(modelItem => item.Popularity)
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </a>
+    }
+</div>
+

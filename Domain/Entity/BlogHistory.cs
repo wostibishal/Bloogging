@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity
 {
@@ -15,20 +10,19 @@ namespace Domain.Entity
         public Guid Id { get; set; }
 
         [Required]
-        public string? BlogTitlePrevious { get; set; }
+        public string? BlogTitlePrevious { get; set; } // Non-nullable
+
         [Required]
-        public string? BlogContentPrevious { get; set; }
+        public string? BlogContentPrevious { get; set; } // Non-nullable
+
         public string? BlogImageNamePrevious { get; set; }
 
-
         public DateTime? BlogCreatedDateTime { get; set; }
-        public DateTime? BlogModifiedDateTime { get; set; } = DateTime.Now;
+        public DateTime? BlogModifiedDateTime { get; set; } = DateTime.Now; // Non-nullable
 
         [ForeignKey(nameof(blogFK))]
+        public Guid Blog { get; set; } // Renamed for clarity
 
-        public Guid Blog { get; set; }
-
-
-        public virtual Blogging? blogFK { get; set; }
+        public virtual Blogging? blogFK { get; set; } // Navigation property
     }
 }

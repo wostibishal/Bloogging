@@ -10,7 +10,7 @@ namespace Domain.Entity
     {
         public bool Success { get; set; }
         public string Message { get; set; }
-        public ReactionBlog Like { get; set; }
+        public ReactionBlog? Like { get; set; }
 
         public ReactionResponce(bool success, string message, ReactionBlog like = null)
         {

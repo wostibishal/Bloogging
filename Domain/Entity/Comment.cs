@@ -1,5 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Reflection.Metadata;
 
 namespace Domain.Entity
@@ -30,5 +35,7 @@ namespace Domain.Entity
 
         public int LikeCount { get; set; } = 0;
         public int DislikeCount { get; set; } = 0;
+
+
     }
 }

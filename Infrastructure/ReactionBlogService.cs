@@ -115,11 +115,5 @@ namespace Infrastructure
                 await _context.SaveChangesAsync();
             }
         }
-
-        public async Task<ReactionResponce> IReactionBlogService.GetUsersLike(Guid id, string u_id)
-        {
-            var res = await _context.Reactions.FirstOrDefaultAsync(x => x.Blog == id && x.User == u_id);
-            return res;
-        }
     }
 }

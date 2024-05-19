@@ -10,9 +10,9 @@ namespace Domain.Entity
     {
         public bool Success { get; set; }
         public string Message { get; set; }
-        public Comment Comment { get; set; }
+        public Comment? Comment { get; set; }
 
-        public CommentResponce(bool success, string message, Comment comment = null)
+        public CommentResponce(bool success, string message, Comment? comment = null)
         {
             Success = success;
             Message = message;

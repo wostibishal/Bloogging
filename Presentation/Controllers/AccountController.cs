@@ -29,6 +29,7 @@ namespace Presentation.Controllers
             _config = config;
             _signInManager = signInManager;
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
@@ -37,9 +38,8 @@ namespace Presentation.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = new AppUser { UserName = model.Email, Email = model.Email };
+            var user = new AppUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
 
-            // Check if the specified role exists
             var roleExists = await _roleManager.RoleExistsAsync(model.Role);
             if (!roleExists)
             {
@@ -58,13 +58,13 @@ namespace Presentation.Controllers
                 return Ok("User registered successfully.");
             }
 
-            return BadRequest(result.Errors);
-        }
+                return BadRequest(result.Errors);
+            }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("get/{id}")]
         public async Task<IActionResult> GetUser(string id)
-        {
+            {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
@@ -81,7 +81,7 @@ namespace Presentation.Controllers
             if (result == null)
             {
                 return NotFound();
-            }
+        }
             return Ok(result);
         }
 
@@ -119,11 +119,11 @@ namespace Presentation.Controllers
             if (result.Succeeded)
             {
                 return Ok("User Password changed  successfully.");
-            }
+        }
 
 
             return BadRequest("Failed to change user.");
-        }
+            }
 
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateUser(string id, UpdateModel model)
@@ -166,6 +166,7 @@ namespace Presentation.Controllers
                 return new LoginResponse(false, null!, "Login not completed");
             }
         }
+
         private string GenerateToken(UserSession user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

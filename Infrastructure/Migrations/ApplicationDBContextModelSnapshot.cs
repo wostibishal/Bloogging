@@ -30,6 +30,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -40,6 +43,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -230,6 +239,9 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("Blog")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("ReactionType")
                         .HasColumnType("bit");
 
@@ -417,17 +429,17 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entity.Blogging", b =>
                 {
-                    b.HasOne("Domain.AppUser", "userFK")
+                    b.HasOne("Domain.AppUser", "UserFK")
                         .WithMany()
                         .HasForeignKey("User");
 
-                    b.Navigation("userFK");
+                    b.Navigation("UserFK");
                 });
 
             modelBuilder.Entity("Domain.Entity.Comment", b =>
                 {
                     b.HasOne("Domain.Entity.Blogging", "Blog")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("BlogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -539,6 +551,11 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entity.Blogging", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

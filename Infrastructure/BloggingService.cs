@@ -25,6 +25,8 @@ namespace Infrastructure
             _context = context;
             _userManager = userManager;
         }
+
+
         public async Task<Blogging> AddBlog(Blogging blog)
         {
             await _context.Blogs.AddAsync(blog);
@@ -37,14 +39,6 @@ namespace Infrastructure
             var result = await _context.Blogs.FindAsync(id);
             if (result != null)
             {
-                // Get the current user's ID
-                //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                //string user = await _userManager.FindByIdAsync(userId);
-
-                //if (result.User != user)
-                //{
-                //    throw new UnauthorizedAccessException("You are not authorized to delete this blog");
-                //}
                 _context.Blogs.Remove(result);
                 await _context.SaveChangesAsync();
             }
@@ -52,13 +46,25 @@ namespace Infrastructure
 
         public async Task<IEnumerable<Blogging>> GetAllBlogs()
         {
-            var result = await _context.Blogs.ToListAsync();
+            var result = await _context.Blogs.Include(x => x.UserFK).ToListAsync();
             return result;
+        }
+
+        public async Task<IEnumerable<Blogging>> GetAllBlogsPagination(int pageNumber = 1, int pageSize = 10)
+        {
+            var blogs = await _context.Blogs
+               .OrderByDescending(b => b.CreatedDate) // Adjust the ordering as per your requirement
+               .Skip((pageNumber - 1) * pageSize)
+               .Take(pageSize)
+               .ToListAsync();
+
+            return blogs;
         }
 
         public async Task<Blogging> GetBlogById(Guid id)
         {
-            return await _context.Blogs.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Blogs.Include(x => x.UserFK).FirstOrDefaultAsync(x => x.Id == id);
+
         }
 
 

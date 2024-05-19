@@ -1,0 +1,46 @@
+﻿@page "/login"
+@using Domain
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@LoginUserModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Email:</label>
+        <InputText @bind-Value="loginUserModel.Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Password:</label>
+        <InputPassword @bind-Value="loginUserModel.Password" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Log in</button>
+</EditForm>
+
+@if (loginError)
+{
+    <div class="alert alert-danger" role="alert">
+        Invalid login attempt.
+    </div>
+}
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+    private bool loginError = false;
+
+    private async Task HandleLogin()
+    {
+        var response = await Http.PostAsJsonAsync("api/account/login", loginModel);
+        if (response.IsSuccessStatusCode)
+        {
+            var token = await response.Content.ReadAsStringAsync();
+            // Here you could store the token in a service or local storage
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            loginError = true;
+        }
+    }
+}

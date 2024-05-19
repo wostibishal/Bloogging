@@ -1,4 +1,5 @@
-﻿using Domain.Entity;
+﻿using Domain;
+using Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,6 @@ namespace Application
         Task<CommentResponce> UpdateComment(Comment comments);
         Task<CommentResponce> DeleteComment(Guid id);
         Task<Comment> GetCommentById(Guid id);
-        Task<IEnumerable<Comment>> GetAllComment();
+        Task<IEnumerable<Comment>> GetAllComment(Guid id);
     }
 }

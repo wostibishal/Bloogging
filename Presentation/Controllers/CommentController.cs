@@ -35,9 +35,9 @@ namespace Presentation.Controllers
         }
 
         [HttpGet, Route("GetComments")]
-        public async Task<IActionResult> GetAllComments()
+        public async Task<IActionResult> GetAllComments(Guid id)
         {
-            var result = await _commentService.GetAllComment();
+            var result = await _commentService.GetAllComment(id);
             if (result == null)
             {
                 return NotFound();
@@ -55,10 +55,10 @@ namespace Presentation.Controllers
 
         [HttpPut, Route("UpdateComment")]
         public async Task<IActionResult> UpdateComment(Comment cmt)
-        {
+    {
             var result = await _commentService.UpdateComment(cmt);
             if (result == null)
-            {
+        {
                 return NotFound();
             }
             return Ok(result);

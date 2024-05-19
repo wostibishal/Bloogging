@@ -11,6 +11,7 @@ namespace Application
         Task DeleteBlog(Guid id);
         Task<Blogging> GetBlogById(Guid id);
         Task<IEnumerable<Blogging>> GetAllBlogs();
+        Task<IEnumerable<Blogging>> GetAllBlogsPagination(int pageNumber = 1, int pageSize = 10);
 
 
     }
